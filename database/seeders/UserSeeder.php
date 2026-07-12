@@ -53,12 +53,7 @@ class UserSeeder extends Seeder
                 ]
             );
 
-            $role = Role::where(
-                'name',
-                $data['role']
-            )->first();
-
-            $user->roles()->sync([$role->id]);
+            $user->syncRoles($data['role']);
         }
     }
 }

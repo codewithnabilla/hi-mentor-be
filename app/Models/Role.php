@@ -4,29 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Models\Role as SpatieRole;
 
-class Role extends Model
+class Role extends SpatieRole
 {
     use HasUuids;
 
     protected $fillable = [
         'uuid',
         'name',
+        'guard_name',
         'description',
     ];
 
     public function uniqueIds(): array
     {
         return ['uuid'];
-    }
-
-    public function users()
-    {
-        return $this->belongsToMany(User::class, 'user_roles');
-    }
-
-    public function permissions()
-    {
-        return $this->belongsToMany(Permission::class, 'role_permissions');
     }
 }
