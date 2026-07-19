@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreMenuRequest extends FormRequest
 {
@@ -12,7 +13,7 @@ class StoreMenuRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +25,14 @@ class StoreMenuRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:100'],
-            'route' => ['required', 'string', 'max:255', 'unique:menus,route'],
+            // 'route' => ['required', 'string', 'max:255', 'unique:menus,route'],
+            'route' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('menus', 'route')
+                    ->ignore($this->menu->id),
+            ],
             'icon' => ['nullable', 'string'],
             'parent_uuid' => ['nullable', 'exists:menus,uuid'],
             'order' => ['nullable', 'integer'],
