@@ -9,6 +9,7 @@ use App\Http\Resources\MenuResource;
 use App\Models\Menu;
 use App\Services\MenuService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class MenuController extends Controller
 {
@@ -21,6 +22,8 @@ class MenuController extends Controller
      */
     public function index()
     {
+        Gate::authorize('viewAny', Menu::class);
+
         return MenuResource::collection(
             $this->service->getAll()
         );
@@ -31,6 +34,8 @@ class MenuController extends Controller
      */
     public function store(StoreMenuRequest $request)
     {
+        Gate::authorize('create', Menu::class);
+
         return new MenuResource(
             $this->service->create($request->validated())
         );
@@ -41,6 +46,8 @@ class MenuController extends Controller
      */
     public function show(Menu $menu)
     {
+        Gate::authorize('view', Menu::class);
+
         return new MenuResource(
             $menu->load('children')
         );
@@ -51,6 +58,8 @@ class MenuController extends Controller
      */
     public function update(UpdateMenuRequest $request, Menu $menu)
     {
+        Gate::authorize('update', $menu);
+
         return new MenuResource(
             $this->service->update($menu, $request->validated())
         );
@@ -61,6 +70,8 @@ class MenuController extends Controller
      */
     public function destroy(Menu $menu)
     {
+        Gate::authorize('delete', $menu);
+        
         $this->service->delete($menu);
 
         return response()->json([

@@ -13,7 +13,7 @@ class MenuPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_menu');
+        return $user->can('view-any-menu');
     }
 
     /**
@@ -21,7 +21,8 @@ class MenuPolicy
      */
     public function view(User $user, Menu $menu): bool
     {
-        return $user->can('view_menu');
+
+        return $user->can('view-menu');
     }
 
     /**
@@ -29,7 +30,8 @@ class MenuPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_menu');
+
+        return $user->can('create-menu');
     }
 
     /**
@@ -37,7 +39,7 @@ class MenuPolicy
      */
     public function update(User $user, Menu $menu): bool
     {
-        return $user->can('update_menu');
+        return $user->can('update-menu');
     }
 
     /**
@@ -45,7 +47,7 @@ class MenuPolicy
      */
     public function delete(User $user, Menu $menu): bool
     {
-        return $user->can('delete_menu');
+        return $user->can('delete-menu');
     }
 
     /**
