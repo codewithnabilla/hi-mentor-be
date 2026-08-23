@@ -14,7 +14,7 @@ class PermissionPolicy
     public function viewAny(User $user): bool
     {
 
-        return $user->can('view-any=permission');
+        return $user->can('view-any-permission');
     }
 
     /**
@@ -23,7 +23,7 @@ class PermissionPolicy
     public function view(User $user, Permission $permission): bool
     {
 
-        return $user->can('view=permission');
+        return $user->can('view-permission');
     }
 
     /**
@@ -32,7 +32,7 @@ class PermissionPolicy
     public function create(User $user): bool
     {
 
-        return $user->can('create=permission');
+        return $user->can('create-permission');
     }
 
     /**
@@ -40,7 +40,7 @@ class PermissionPolicy
      */
     public function update(User $user, Permission $permission): bool
     {
-        return $user->can('update=permission');
+        return $user->can('update-permission');
     }
 
     /**
@@ -49,7 +49,7 @@ class PermissionPolicy
     public function delete(User $user, Permission $permission): bool
     {
 
-        return $user->can('delete=permission');
+        return $user->can('delete-permission');
     }
 
     /**
