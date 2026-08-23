@@ -20,4 +20,9 @@ class Permission extends SpatiePermission
     {
         return ['uuid'];
     }
+
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
 }

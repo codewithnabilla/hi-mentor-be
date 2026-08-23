@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\MenuController;
+use App\Http\Controllers\Api\PermissionController;
 use Illuminate\Support\Facades\Route;
 
 // public routes
@@ -15,4 +16,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::apiResource('/menus', MenuController::class);
+    Route::apiResource('/permissions', PermissionController::class);
 });
