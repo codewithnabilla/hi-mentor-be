@@ -20,12 +20,10 @@ class MenuController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        Gate::authorize('viewAny', Menu::class);
-
         return MenuResource::collection(
-            $this->service->getAll()
+            $this->service->getVisibleFor($request->user())
         );
     }
 
