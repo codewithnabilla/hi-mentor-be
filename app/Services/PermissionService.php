@@ -6,9 +6,15 @@ use App\Models\Permission;
 
 class PermissionService
 {
-    public function getAll(int $perPage = 10)
+    public function getAll(int $perPage = 10, ?string $search = null)
     {
-        return Permission::orderBy('name')->paginate($perPage);
+        $query = Permission::query()->orderBy('name');
+
+        if (!empty($search)) {
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+
+        return $query->paginate($perPage);
     }
 
     public function create(array $data)

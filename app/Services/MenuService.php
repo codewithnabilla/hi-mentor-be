@@ -8,13 +8,18 @@ use Illuminate\Database\Eloquent\Collection;
 
 class MenuService
 {
-    public function getVisibleFor(User $user): Collection
+    public function getVisibleFor(User $user, ?string $search = null): Collection
     {
-        $menus = Menu::with('children.children')
+        $query = Menu::with('children.children')
             ->where('is_active', true)
             ->whereNull('parent_uuid')
-            ->orderBy('order')
-            ->get();
+            ->orderBy('order');
+
+        if (!empty($search)) {
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+
+        $menus = $query->get();
 
         return $this->filterVisibleMenus($menus, $user);
     }
@@ -34,10 +39,10 @@ class MenuService
             $menu->setRelation('children', $visibleChildren->values());
 
             $hasPermission = blank($menu->permission)
-                ? $visibleChildren->isNotEmpty()
+                ? ($visibleChildren->isNotEmpty() || $user->can('view-any-menu'))
                 : $user->can($menu->permission);
 
-            return $hasPermission && ($visibleChildren->isNotEmpty() || filled($menu->permission));
+            return $hasPermission && ($visibleChildren->isNotEmpty() || filled($menu->permission) || $user->can('view-any-menu'));
         })->values();
     }
 

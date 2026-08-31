@@ -21,12 +21,13 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        Gate::authorize('viewAny', Permission::class);
+        Gate::authorize('viewAny', User::class);
 
         $perPage = $request->input('per_page', 10);
+        $search = $request->input('search');
 
         return UserResource::collection(
-            $this->service->getAll($perPage)
+            $this->service->getAll($perPage, $search)
         );
     }
 

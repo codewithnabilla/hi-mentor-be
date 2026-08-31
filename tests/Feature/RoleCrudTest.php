@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Menu;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
@@ -133,5 +134,48 @@ class RoleCrudTest extends TestCase
             [$studentRole->id],
             $user->fresh()->roles()->pluck('id')->all()
         );
+    }
+
+    public function test_index_endpoints_can_search_by_name(): void
+    {
+        $admin = User::factory()->create();
+
+        Permission::firstOrCreate(['name' => 'view-any-user', 'guard_name' => 'web']);
+        Permission::firstOrCreate(['name' => 'view-any-role', 'guard_name' => 'web']);
+        Permission::firstOrCreate(['name' => 'view-any-permission', 'guard_name' => 'web']);
+        Permission::firstOrCreate(['name' => 'view-any-menu', 'guard_name' => 'web']);
+        $admin->givePermissionTo(['view-any-user', 'view-any-role', 'view-any-permission', 'view-any-menu']);
+
+        Permission::create(['name' => 'view-admin-panel', 'guard_name' => 'web']);
+        Permission::create(['name' => 'view-user-report', 'guard_name' => 'web']);
+
+        Role::create(['name' => 'Admin', 'guard_name' => 'web']);
+        Role::create(['name' => 'Mentor', 'guard_name' => 'web']);
+
+        User::factory()->create(['name' => 'Admin User', 'email' => 'admin.user@example.com']);
+        User::factory()->create(['name' => 'Mentor User', 'email' => 'mentor.user@example.com']);
+
+        Menu::create(['name' => 'Admin Dashboard', 'route' => '/admin-dashboard', 'order' => 1, 'is_active' => true]);
+        Menu::create(['name' => 'Mentor Panel', 'route' => '/mentor-panel', 'order' => 2, 'is_active' => true]);
+
+        $this->actingAs($admin, 'sanctum')
+            ->getJson('/api/permissions?search=admin')
+            ->assertOk()
+            ->assertJsonFragment(['name' => 'view-admin-panel']);
+
+        $this->actingAs($admin, 'sanctum')
+            ->getJson('/api/roles?search=mentor')
+            ->assertOk()
+            ->assertJsonFragment(['name' => 'Mentor']);
+
+        $this->actingAs($admin, 'sanctum')
+            ->getJson('/api/users?search=admin')
+            ->assertOk()
+            ->assertJsonFragment(['name' => 'Admin User']);
+
+        $this->actingAs($admin, 'sanctum')
+            ->getJson('/api/menus?search=mentor')
+            ->assertOk()
+            ->assertJsonFragment(['name' => 'Mentor Panel']);
     }
 }

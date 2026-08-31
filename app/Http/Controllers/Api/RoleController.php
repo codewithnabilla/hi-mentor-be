@@ -22,9 +22,10 @@ class RoleController extends Controller
         Gate::authorize('viewAny', Role::class);
 
         $perPage = $request->input('per_page', 10);
+        $search = $request->input('search');
 
         return RoleResource::collection(
-            $this->service->getAll($perPage)
+            $this->service->getAll($perPage, $search)
         );
     }
 

@@ -7,11 +7,15 @@ use App\Models\User;
 
 class UserService
 {
-    public function getAll(int $perPage = 10)
+    public function getAll(int $perPage = 10, ?string $search = null)
     {
-        return User::with('roles')
-            ->orderBy('name')
-            ->paginate($perPage);
+        $query = User::with('roles')->orderBy('name');
+
+        if (!empty($search)) {
+            $query->where('name', 'ilike', '%' . $search . '%');
+        }
+
+        return $query->paginate($perPage);
     }
 
     public function create(array $data)

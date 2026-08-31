@@ -22,8 +22,10 @@ class MenuController extends Controller
      */
     public function index(Request $request)
     {
+        Gate::authorize('viewAny', Menu::class);
+
         return MenuResource::collection(
-            $this->service->getVisibleFor($request->user())
+            $this->service->getVisibleFor($request->user(), $request->input('search'))
         );
     }
 

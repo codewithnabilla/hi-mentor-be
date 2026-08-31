@@ -7,11 +7,15 @@ use App\Models\Role;
 
 class RoleService
 {
-    public function getAll(int $perPage = 10)
+    public function getAll(int $perPage = 10, ?string $search = null)
     {
-        return Role::with('permissions')
-            ->orderBy('name')
-            ->paginate($perPage);
+        $query = Role::with('permissions')->orderBy('name');
+
+        if (!empty($search)) {
+            $query->where('name', 'ilike', '%' . $search . '%');
+        }
+
+        return $query->paginate($perPage);
     }
 
     public function create(array $data)

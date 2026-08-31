@@ -22,9 +22,10 @@ class PermissionController extends Controller
         Gate::authorize('viewAny', Permission::class);
 
         $perPage = $request->input('per_page', 10);
+        $search = $request->input('search');
 
         return PermissionResource::collection(
-            $this->service->getAll($perPage)
+            $this->service->getAll($perPage, $search)
         );
     }
 
@@ -39,14 +40,14 @@ class PermissionController extends Controller
 
     public function show(Permission $permission)
     {
-        Gate::authorize('view', Permission::class);
+        Gate::authorize('view', $permission);
 
         return new PermissionResource($permission);
     }
 
     public function update(UpdatePermissionRequest $request, Permission $permission)
     {
-        Gate::authorize('update', Permission::class);
+        Gate::authorize('update', $permission);
 
         return new PermissionResource(
             $this->service->update($permission, $request->validated())
@@ -55,7 +56,7 @@ class PermissionController extends Controller
 
     public function destroy(Permission $permission)
     {
-        Gate::authorize('delete', Permission::class);
+        Gate::authorize('delete', $permission);
 
         $this->service->delete($permission);
 
