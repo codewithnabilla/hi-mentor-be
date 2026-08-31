@@ -21,4 +21,9 @@ class Role extends SpatieRole
     {
         return ['uuid'];
     }
+
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
 }
