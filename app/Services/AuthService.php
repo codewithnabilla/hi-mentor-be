@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Resources\UserResource;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -35,6 +36,14 @@ class AuthService
             'password' => $data['password'],
         ]);
 
+        if (!empty($data['role'])) {
+            $role = Role::where('name', $data['role'])->first();
+
+            if ($role) {
+                $user->syncRoles([$role->id]);
+            }
+        }
+
         $user->load('roles.permissions');
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -54,7 +63,7 @@ class AuthService
     public function me(User $user): UserResource
     {
         return new UserResource(
-            auth()->user()->load('roles.permissions')
+            $user->load('roles.permissions')
         );
     }
 }

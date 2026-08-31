@@ -21,7 +21,10 @@ class UserResource extends JsonResource
 
             'roles' => RoleResource::collection(
                 $this->whenLoaded('roles')
-            )
+            ),
+            'permissions' => PermissionResource::collection(
+                $this->getAllPermissions()->unique('id')->values()
+            ),
         ];
     }
 }

@@ -79,4 +79,59 @@ class RoleCrudTest extends TestCase
 
         $this->assertTrue($role->fresh()->hasPermissionTo($permissionA));
     }
+
+    public function test_admin_can_create_and_update_user_with_multiple_roles(): void
+    {
+        $admin = User::factory()->create();
+        Permission::firstOrCreate(['name' => 'create-user', 'guard_name' => 'web']);
+        Permission::firstOrCreate(['name' => 'update-user', 'guard_name' => 'web']);
+        $admin->givePermissionTo(['create-user', 'update-user']);
+
+        $mentorRole = Role::create([
+            'name' => 'Mentor',
+            'guard_name' => 'web',
+            'description' => 'Mentor role',
+        ]);
+
+        $studentRole = Role::create([
+            'name' => 'Student',
+            'guard_name' => 'web',
+            'description' => 'Student role',
+        ]);
+
+        $createResponse = $this->actingAs($admin, 'sanctum')
+            ->postJson('/api/users', [
+                'name' => 'Jane User',
+                'email' => 'jane@example.com',
+                'password' => 'password123',
+                'password_confirmation' => 'password123',
+                'roles' => [$mentorRole->uuid, $studentRole->uuid],
+            ]);
+
+        $createResponse->assertCreated()
+            ->assertJsonPath('data.name', 'Jane User')
+            ->assertJsonCount(2, 'data.roles');
+
+        $user = User::where('email', 'jane@example.com')->firstOrFail();
+        $this->assertEqualsCanonicalizing(
+            [$mentorRole->id, $studentRole->id],
+            $user->fresh()->roles()->pluck('id')->all()
+        );
+
+        $updateResponse = $this->actingAs($admin, 'sanctum')
+            ->putJson('/api/users/' . $user->uuid, [
+                'name' => 'Jane Updated',
+                'email' => 'jane.updated@example.com',
+                'roles' => [$studentRole->uuid],
+            ]);
+
+        $updateResponse->assertOk()
+            ->assertJsonPath('data.name', 'Jane Updated')
+            ->assertJsonCount(1, 'data.roles');
+
+        $this->assertEqualsCanonicalizing(
+            [$studentRole->id],
+            $user->fresh()->roles()->pluck('id')->all()
+        );
+    }
 }

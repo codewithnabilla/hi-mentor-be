@@ -30,20 +30,20 @@ class UserController extends Controller
         );
     }
 
-    // public function store(StoreUserRequest $request)
-    // {
-    //     Gate::authorize('create', Permission::class);
+    public function store(StoreUserRequest $request)
+    {
+        Gate::authorize('create', User::class);
 
-    //     return new UserResource(
-    //         $this->service->create($request->validated())
-    //     );
-    // }
+        return (new UserResource(
+            $this->service->create($request->validated())
+        ))->response()->setStatusCode(201);
+    }
 
     public function show(User $user)
     {
         Gate::authorize('view', User::class);
 
-        return new UserResource($user);
+        return new UserResource($user->load('roles.permissions'));
     }
 
     public function update(UpdateUserRequest $request, User $user)
