@@ -27,6 +27,8 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UserSeeder::class,
             MenuSeeder::class,
+            DepartmentSeeder::class,
+            CareerSeeder::class
         ]);
     }
 }
