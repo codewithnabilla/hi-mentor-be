@@ -2,20 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Department extends Model
+class Skill extends Model
 {
-    protected $table = 'master.departments';
+    protected $table = 'master.skills';
 
-    use HasUuids, SoftDeletes;
+    /** @use HasFactory<\Database\Factories\SkillFactory> */
+    use HasFactory, SoftDeletes, HasUuids;
 
     protected $fillable = [
         'uuid',
         'name',
-        'code',
         'description',
         'is_active',
         'created_by',
@@ -37,13 +38,13 @@ class Department extends Model
         return 'uuid';
     }
 
-    public function skills()
+    public function departments()
     {
         return $this->belongsToMany(
-            Skill::class,
+            Department::class,
             'master.department_skill',
-            'department_uuid',
             'skill_uuid',
+            'department_uuid',
             'uuid',
             'uuid'
         );
