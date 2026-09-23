@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Department;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateDepartmentRequest extends FormRequest
 {
@@ -24,9 +26,22 @@ class UpdateDepartmentRequest extends FormRequest
     {
         return [
             'name' => ['sometimes', 'string', 'max:100'],
-            'code' => ['sometimes', 'string', 'max:50'],
+            'code' => [
+                'sometimes',
+                'string',
+                'max:50',
+                Rule::unique(Department::class, 'code')
+                    ->ignore($this->department->uuid, 'uuid'),
+            ],
             'description' => ['nullable', 'string'],
             'is_active' => ['boolean'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'code.unique' => 'Department code :input already exists.',
         ];
     }
 }
