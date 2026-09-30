@@ -21,6 +21,8 @@ class PermissionSeeder extends Seeder
             'mentor',
             'menu',
             'department',
+            'skill',
+            'career',
         ];
 
         $actions = [
