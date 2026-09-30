@@ -10,6 +10,12 @@ class Department extends Model
 {
     protected $table = 'master.departments';
 
+    protected $primaryKey = 'uuid';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     use HasUuids, SoftDeletes;
 
     protected $fillable = [
