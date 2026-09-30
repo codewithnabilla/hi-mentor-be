@@ -31,7 +31,7 @@ class UpdateDepartmentRequest extends FormRequest
                 'string',
                 'max:50',
                 Rule::unique(Department::class, 'code')
-                    ->ignore($this->department->uuid, 'uuid'),
+                    ->ignoreModel($this->department),
             ],
             'description' => ['nullable', 'string'],
             'is_active' => ['boolean'],

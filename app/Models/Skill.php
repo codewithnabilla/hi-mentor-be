@@ -11,6 +11,12 @@ class Skill extends Model
 {
     protected $table = 'master.skills';
 
+    protected $primaryKey = 'uuid';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     /** @use HasFactory<\Database\Factories\SkillFactory> */
     use HasFactory, SoftDeletes, HasUuids;
 
