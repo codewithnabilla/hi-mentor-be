@@ -32,4 +32,12 @@ class Mentor extends Model
         'is_available' => 'boolean',
         'is_active' => 'boolean',
     ];
+
+    /**
+     * Get the user that owns the mentor profile.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_uuid', 'uuid');
+    }
 }

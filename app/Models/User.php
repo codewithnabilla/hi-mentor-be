@@ -42,4 +42,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function mentor()
+    {
+        return $this->hasOne(Mentor::class, 'user_uuid', 'uuid');
+    }
+
+    public function student()
+    {
+        return $this->hasOne(Student::class, 'user_uuid', 'uuid');
+    }
 }
